@@ -8,6 +8,8 @@ import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getWixClient } from "@/lib/wix-client.base";
 import Product from "@/components/Product";
+import { getCollectionBySlug } from "@/wix-api/collections";
+import { queryProducts } from "@/wix-api/products";
 
 export default async function Home() {
   return (
@@ -42,20 +44,15 @@ export default async function Home() {
 async function FeaturedProducts() {
   await delay(1000);
 
-  const wixClient = getWixClient();
-
-  const { collection } =
-    await wixClient.collections.getCollectionBySlug("イチオシ商品");
+  const collection = await getCollectionBySlug("イチオシ商品");
 
   if (!collection?._id) {
     return null;
   }
 
-  const featuredProducts = await wixClient.products
-    .queryProducts()
-    .hasSome("collectionIds", [collection._id])
-    .descending("lastUpdated")
-    .find();
+  const featuredProducts = await queryProducts({
+    collectionIds: collection._id,
+  });
 
   if (!featuredProducts.items.length) {
     return null;
@@ -69,7 +66,6 @@ async function FeaturedProducts() {
           <Product key={product._id} product={product} />
         ))}
       </div>
-      <pre>{JSON.stringify(featuredProducts, null, 2)}</pre>
     </div>
   );
 }
