@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
 import { Lora } from "next/font/google";
 import "./globals.css";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
 
 const lora = Lora({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | Flow Shop",
-    absolute: "Flow Shop",
+    template: "%s | Bad Shop",
+    absolute: "Bad Shop",
   },
   description: "A full-stack e-commerce application built with Next.js 15",
 };
@@ -19,7 +21,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={lora.className}>{children}</body>
+      <body className={lora.className}>
+        <Navbar />
+        {children}
+        <Footer />
+      </body>
     </html>
   );
 }
