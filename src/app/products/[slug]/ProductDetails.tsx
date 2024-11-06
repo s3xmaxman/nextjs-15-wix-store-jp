@@ -16,6 +16,7 @@ import { useState } from "react";
 import ProductMedia from "./ProductMedia";
 import ProductOptions from "./ProductOptions";
 import ProductPrice from "./ProductPrice";
+import AddToCartButton from "@/components/AddToCartButton";
 
 interface ProductDetailsProps {
   product: products.Product;
@@ -81,7 +82,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
           setSelectedOptions={setSelectedOptions}
         />
         <div className="space-y-1.5">
-          <Label htmlFor="quantity">Quantity</Label>
+          <Label htmlFor="quantity">数量</Label>
           <div className="flex items-center gap-2.5">
             <Input
               name="quantity"
@@ -94,16 +95,25 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
             {!!availableQuantity &&
               (availableQuantityExceeded || availableQuantity < 10) && (
                 <span className="text-destructive">
-                  Only {availableQuantity} left in stock
+                  在庫は{availableQuantity}個のみです
                 </span>
               )}
           </div>
         </div>
+        {inStock ? (
+          <AddToCartButton
+            product={product}
+            selectedOptions={selectedOptions}
+            quantity={quantity}
+          />
+        ) : (
+          "在庫切れ"
+        )}
         {!!product.additionalInfoSections?.length && (
           <div className="space-y-1.5 text-sm text-muted-foreground">
             <span className="flex items-center gap-2">
               <InfoIcon className="size-5" />
-              <span>Additional product information</span>
+              <span>追加の商品情報</span>
             </span>
             <Accordion type="multiple">
               {product.additionalInfoSections.map((section) => (
