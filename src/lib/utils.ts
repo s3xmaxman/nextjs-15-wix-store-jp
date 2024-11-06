@@ -20,6 +20,17 @@ export function formatCurrency(
   }).format(Number(price));
 }
 
+/**
+ * 選択されたオプションに一致する商品のバリアントを見つけます。
+ *
+ * 商品にバリアントが存在しない場合、または選択されたオプションが空の場合、
+ * 商品の最初のバリアントを返します。それ以外の場合は、選択されたオプションに
+ * 一致するバリアントを返します。
+ *
+ * @param product - バリアントを見つける商品
+ * @param selectedOptions - 一致させる選択されたオプション
+ * @returns 一致するバリアント、または一致するバリアントがない場合は `null`
+ */
 export function findVariant(
   product: products.Product,
   selectedOptions: Record<string, string>,

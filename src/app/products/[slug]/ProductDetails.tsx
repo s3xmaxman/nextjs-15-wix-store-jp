@@ -3,12 +3,34 @@
 import Badge from "@/components/ui/badge";
 import WixImage from "@/components/WixImage";
 import { products } from "@wix/stores";
+import ProductOptions from "./ProductOptions";
+import { useState } from "react";
+import { checkInStock, findVariant } from "@/lib/utils";
 
 interface ProductDetailsProps {
   product: products.Product;
 }
 
 export default function ProductDetails({ product }: ProductDetailsProps) {
+  const [quantity, setQuantity] = useState(1);
+
+  // selectedOptionsの状態を初期化
+  const [selectedOptions, setSelectedOptions] = useState<
+    Record<string, string>
+  >(
+    product.productOptions
+      // 各オプションをオブジェクトに変換
+      ?.map((option) => ({
+        [option.name || ""]: option.choices?.[0].description || "",
+      }))
+      // オブジェクトを1つに結合
+      ?.reduce((acc, curr) => ({ ...acc, ...curr }), {}) || {},
+  );
+
+  const selectedVariant = findVariant(product, selectedOptions);
+  const inStock = checkInStock(product, selectedOptions);
+
+
   return (
     <div className="flex flex-col gap-10 md:flex-row lg:gap-20">
       <div>
@@ -34,6 +56,11 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
             className="prose dark:prose-invert"
           />
         )}
+        <ProductOptions
+          product={product}
+          selectedOptions={selectedOptions}
+          setSelectedOptions={setSelectedOptions}
+        />
       </div>
     </div>
   );
