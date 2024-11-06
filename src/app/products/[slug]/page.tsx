@@ -1,10 +1,41 @@
 import { getProductBySlug } from "@/wix-api/products";
 import { notFound } from "next/navigation";
 import ProductDetails from "./ProductDetails";
+import { Metadata } from "next";
 
 interface PageProps {
   params: {
     slug: string;
+  };
+}
+
+export async function generateMetadata({
+  params: { slug },
+}: PageProps): Promise<Metadata> {
+  const decodedSlug = decodeURIComponent(slug);
+  const product = await getProductBySlug(decodedSlug);
+
+  if (!product?._id) {
+    notFound();
+  }
+
+  const mainImage = product.media?.mainMedia?.image;
+
+  return {
+    title: product.name,
+    description: "Get this product on Bad Shop",
+    openGraph: {
+      images: mainImage?.url
+        ? [
+            {
+              url: mainImage?.url,
+              width: mainImage?.width,
+              height: mainImage?.height,
+              alt: mainImage?.altText || "",
+            },
+          ]
+        : undefined,
+    },
   };
 }
 
