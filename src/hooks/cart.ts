@@ -19,6 +19,11 @@ import { useToast } from "./use-toast";
 
 const queryKey: QueryKey = ["cart"];
 
+/**
+ * カート情報を取得するためのカスタムフックです。
+ * @param {currentCart.Cart | null} initialData - 初期データとして使用するカート情報
+ * @returns {Object} useQueryの結果オブジェクト
+ */
 export function useCart(initialData: currentCart.Cart | null) {
   return useQuery({
     queryKey,
@@ -27,9 +32,12 @@ export function useCart(initialData: currentCart.Cart | null) {
   });
 }
 
+/**
+ * カートに商品を追加するためのカスタムフックです。
+ * @returns {Object} useMutationの結果オブジェクト
+ */
 export function useAddItemToCart() {
   const queryClient = useQueryClient();
-
   const { toast } = useToast();
 
   return useMutation({
@@ -52,6 +60,10 @@ export function useAddItemToCart() {
   });
 }
 
+/**
+ * カート内の商品の数量を更新するためのカスタムフックです。
+ * @returns {Object} useMutationの結果オブジェクト
+ */
 export function useUpdateCartItemQuantity() {
   const queryClient = useQueryClient();
   const mutationKey: MutationKey = ["updateCartItemQuantity"];
