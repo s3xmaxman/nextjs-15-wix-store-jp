@@ -7,6 +7,16 @@ const wixClient = createClient({
   auth: OAuthStrategy({ clientId: env.NEXT_PUBLIC_WIX_CLIENT_ID }),
 });
 
+/**
+ * Wixと認証を処理するNext.jsミドルウェア。
+ *
+ * クッキーに有効なセッショントークンが存在するか確認し、存在しない場合は新しいトークンを生成します。
+ * トークンが期限切れに近い場合は更新します。
+ *
+ * ミドルウェアは新しいトークンでWIX_SESSION_COOKIEクッキーを設定します。
+ *
+ * 新しいクッキーを持つレスポンスを返します。
+ */
 export async function middleware(request: NextRequest) {
   const cookies = request.cookies;
   const sessionCookie = cookies.get(WIX_SESSION_COOKIE);
