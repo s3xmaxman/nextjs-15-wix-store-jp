@@ -3,6 +3,12 @@ import { findVariant } from "@/lib/utils";
 import { WixClient } from "@/lib/wix-client.base";
 import { products } from "@wix/stores";
 
+/**
+ * カート情報を取得します。
+ * @param {WixClient} wixClient - Wixクライアントインスタンス
+ * @returns {Promise<currentCart.Cart | null>} カート情報またはカートが見つからない場合はnull
+ * @throws {Error} カート取得中に予期しないエラーが発生した場合
+ */
 export async function getCart(wixClient: WixClient) {
   try {
     return await wixClient.currentCart.getCurrentCart();
@@ -17,6 +23,12 @@ export async function getCart(wixClient: WixClient) {
   }
 }
 
+/**
+ * カートに商品を追加します。
+ * @param {WixClient} wixClient - Wixクライアントインスタンス
+ * @param {AddToCartValues} values - カートに追加する商品の情報
+ * @returns {Promise<currentCart.AddToCartResponse>} カートに商品を追加した結果
+ */
 export interface AddToCartValues {
   product: products.Product;
   selectedOptions: Record<string, string>;
@@ -45,4 +57,37 @@ export async function addToCart(
       },
     ],
   });
+}
+
+/**
+ * カート内の商品の数量を更新します。
+ * @param {WixClient} wixClient - Wixクライアントインスタンス
+ * @param {UpdateCartItemQuantityValues} values - 更新する商品のIDと新しい数量
+ * @returns {Promise<currentCart.UpdateCartResponse>} カートの更新結果
+ */
+export interface UpdateCartItemQuantityValues {
+  productId: string;
+  newQuantity: number;
+}
+
+export async function updateCartItemQuantity(
+  wixClient: WixClient,
+  { productId, newQuantity }: UpdateCartItemQuantityValues,
+) {
+  return wixClient.currentCart.updateCurrentCartLineItemQuantity([
+    {
+      _id: productId,
+      quantity: newQuantity,
+    },
+  ]);
+}
+
+/**
+ * カートから商品を削除します。
+ * @param {WixClient} wixClient - Wixクライアントインスタンス
+ * @param {string} productId - 削除する商品のID
+ * @returns {Promise<currentCart.RemoveFromCartResponse>} カートから商品を削除した結果
+ */
+export async function removeCartItem(wixClient: WixClient, productId: string) {
+  return wixClient.currentCart.removeLineItemsFromCurrentCart([productId]);
 }
