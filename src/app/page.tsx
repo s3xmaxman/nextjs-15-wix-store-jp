@@ -10,6 +10,7 @@ import { getWixClient } from "@/lib/wix-client.base";
 import Product from "@/components/Product";
 import { getCollectionBySlug } from "@/wix-api/collections";
 import { queryProducts } from "@/wix-api/products";
+import { getWixServerClient } from "@/lib/wix-client.server";
 
 export default async function Home() {
   return (
@@ -44,13 +45,15 @@ export default async function Home() {
 async function FeaturedProducts() {
   await delay(1000);
 
-  const collection = await getCollectionBySlug("イチオシ商品");
+  const wixClient = getWixServerClient();
+
+  const collection = await getCollectionBySlug(wixClient, "イチオシ商品");
 
   if (!collection?._id) {
     return null;
   }
 
-  const featuredProducts = await queryProducts({
+  const featuredProducts = await queryProducts(wixClient, {
     collectionIds: collection._id,
   });
 
