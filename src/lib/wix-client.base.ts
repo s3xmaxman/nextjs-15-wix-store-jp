@@ -13,6 +13,11 @@ import { reviews } from "@wix/reviews";
 import { createClient, OAuthStrategy, Tokens } from "@wix/sdk";
 import { collections, products } from "@wix/stores";
 
+/**
+ * Wix SDK クライアントインスタンスを取得します。
+ * @param {Tokens | undefined} tokens - Wixトークン
+ * @returns {import("@wix/sdk").Client} Wix SDK クライアントインスタンス
+ */
 export function getWixClient(tokens: Tokens | undefined) {
   return createClient({
     modules: {
