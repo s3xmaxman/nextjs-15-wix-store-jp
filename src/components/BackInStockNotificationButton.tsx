@@ -50,7 +50,14 @@ export default function BackInStockNotificationButton({
 
   const mutation = useCreateBackInStockNotificationRequest();
 
-  const onSubmit = (values: FormValues) => {};
+  const onSubmit = (values: FormValues) => {
+    mutation.mutate({
+      email: values.email,
+      itemUrl: env.NEXT_PUBLIC_BASE_URL + "/products/" + product.slug,
+      product,
+      selectedOptions,
+    });
+  };
 
   return (
     <Dialog>

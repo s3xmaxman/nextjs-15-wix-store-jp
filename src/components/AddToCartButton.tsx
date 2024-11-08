@@ -34,7 +34,7 @@ export default function AddToCartButton({
       {...props}
     >
       <ShoppingCartIcon />
-      Add to cart
+      カートに追加
     </LoadingButton>
   );
 }
