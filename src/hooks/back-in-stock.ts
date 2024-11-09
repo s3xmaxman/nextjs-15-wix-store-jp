@@ -6,6 +6,11 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "./use-toast";
 
+/**
+ * 在庫あり通知リクエストを作成するためのカスタムフックです。
+ *
+ * @returns {Object} useMutationの結果オブジェクト
+ */
 export function useCreateBackInStockNotificationRequest() {
   const { toast } = useToast();
 
