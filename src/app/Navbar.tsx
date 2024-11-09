@@ -6,13 +6,16 @@ import Link from "next/link";
 import ShoppingCartButton from "./ShoppingCartButton";
 import UserButton from "@/components/UserButton";
 import { getLoggedInMember } from "@/wix-api/members";
+import MainNavigation from "./MainNavigation";
+import { getCollection } from "@/wix-api/collections";
 
 export default async function Navbar() {
   const wixClient = getWixServerClient();
 
-  const [cart, loggedInMember] = await Promise.all([
+  const [cart, loggedInMember, collections] = await Promise.all([
     getCart(wixClient),
     getLoggedInMember(wixClient),
+    getCollection(wixClient),
   ]);
 
   return (
@@ -22,6 +25,7 @@ export default async function Navbar() {
           <Image src={logo} alt="Flow Shop logo" width={40} height={40} />
           <span className="text-xl font-bold">Bad Shop</span>
         </Link>
+        <MainNavigation collections={collections} />
         <div className="flex items-center justify-center gap-5">
           <UserButton loggedInMember={loggedInMember} />
           <ShoppingCartButton initialData={cart} />
