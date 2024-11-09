@@ -2,8 +2,8 @@ import { usePathname } from "next/navigation";
 import { useToast } from "./use-toast";
 import { wixBrowserClient } from "@/lib/wix-client.browser";
 import { generateOAuthData, getLoginUrl, getLogoutUrl } from "@/wix-api/auth";
-import { WIX_OAUTH_DATA_COOKIE } from "@/lib/constants";
-import Cookie from "js-cookie";
+import { WIX_OAUTH_DATA_COOKIE, WIX_SESSION_COOKIE } from "@/lib/constants";
+import Cookies from "js-cookie";
 
 /**
  * Wixの認証フックを提供します。
@@ -29,7 +29,7 @@ export default function useAuth() {
     try {
       const oAuthData = await generateOAuthData(wixBrowserClient, pathname);
 
-      Cookie.set(WIX_OAUTH_DATA_COOKIE, JSON.stringify(oAuthData), {
+      Cookies.set(WIX_OAUTH_DATA_COOKIE, JSON.stringify(oAuthData), {
         secure: process.env.NODE_ENV === "production",
         expires: new Date(Date.now() + 60 * 10 * 1000), // 10分有効
       });
@@ -54,7 +54,8 @@ export default function useAuth() {
   async function logout() {
     try {
       const logoutUrl = await getLogoutUrl(wixBrowserClient);
-      Cookie.remove(WIX_OAUTH_DATA_COOKIE);
+
+      Cookies.remove(WIX_SESSION_COOKIE);
 
       window.location.href = logoutUrl;
     } catch (error) {
