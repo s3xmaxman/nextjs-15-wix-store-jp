@@ -39,7 +39,7 @@ export default function MainNavigation({
               {collections.map((collection) => (
                 <li key={collection._id}>
                   <Link
-                    href={`/collections/${collection.slug}`}
+                    href={`/collections/${encodeURIComponent(collection.slug!)}`}
                     legacyBehavior
                     passHref
                   >
