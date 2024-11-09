@@ -6,17 +6,24 @@ type ProductsSort = "last_updated" | "price_asc" | "price_desc";
 interface QueryProductsFilter {
   collectionIds?: string[] | string;
   sort?: ProductsSort;
+  skip?: number;
+  limit?: number;
 }
 
 /**
- * Wix APIを使用して商品をクエリするための関数です。
+ * Wix APIを使用して商品をクエリする関数です。
+ *
  * @param {WixClient} wixClient - Wixクライアントインスタンス
- * @param {QueryProductsFilter} options - クエリフィルターとソートオプション
+ * @param {QueryProductsFilter} options - クエリのオプション
+ * @param {string|string[]} [options.collectionIds] - フィルタリングするコレクションID。単一のIDまたはIDの配列
+ * @param {ProductsSort} [options.sort="last_updated"] - ソートオプション。デフォルトは"last_updated"
+ * @param {number} [options.skip] - スキップする商品の数
+ * @param {number} [options.limit] - 取得する商品の最大数
  * @returns {Promise<products.Product[]>} 商品の配列
  */
 export async function queryProducts(
   wixClient: WixClient,
-  { collectionIds, sort = "last_updated" }: QueryProductsFilter,
+  { collectionIds, sort = "last_updated", skip, limit }: QueryProductsFilter,
 ) {
   let query = wixClient.products.queryProducts();
 
@@ -43,6 +50,16 @@ export async function queryProducts(
     case "last_updated":
       query = query.descending("lastUpdated");
       break;
+  }
+
+  // 取得する商品の数を制限
+  if (limit) {
+    query = query.limit(limit);
+  }
+
+  // スキップする商品の数を設定
+  if (skip) {
+    query = query.skip(skip);
   }
 
   // クエリを実行して商品を取得
