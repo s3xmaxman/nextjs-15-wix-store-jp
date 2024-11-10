@@ -27,20 +27,19 @@ export default async function Page({
   const title = q ? `「${q}」の検索結果` : "商品";
 
   return (
-    <main className="flex flex-col items-center justify-center gap-10 px-5 py-10 lg:flex-row lg:items-start">
-      <div>filter Sidebar</div>
-      <div className="w-full max-w-7xl">
-        <div className="flex justify-center lg:justify-end">Sort Filter</div>
-        <div className="space-y-10">
-          <h1 className="text-center text-3xl font-bold md:text-4xl">
-            {title}
-          </h1>
-          <Suspense fallback={<LoadingSkeleton />} key={`${q}-${page}`}>
-            <ProductResults q={q} page={parseInt(page)} />
-          </Suspense>
-        </div>
-      </div>
-    </main>
+    <div className="space-y-10">
+      <h1 className="text-center text-3xl font-bold md:text-4xl">{title}</h1>
+      <Suspense fallback={<LoadingSkeleton />} key={`${q}-${page}`}>
+        <ProductResults
+          q={q}
+          page={parseInt(page)}
+          // collectionIds={collectionIds}
+          // priceMin={price_min ? parseInt(price_min) : undefined}
+          // priceMax={price_max ? parseInt(price_max) : undefined}
+          // sort={sort as ProductsSort}
+        />
+      </Suspense>
+    </div>
   );
 }
 

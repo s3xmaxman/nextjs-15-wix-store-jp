@@ -7,7 +7,7 @@ import ShoppingCartButton from "./ShoppingCartButton";
 import UserButton from "@/components/UserButton";
 import { getLoggedInMember } from "@/wix-api/members";
 import MainNavigation from "./MainNavigation";
-import { getCollection } from "@/wix-api/collections";
+import { getCollections } from "@/wix-api/collections";
 import SearchField from "@/components/SearchField";
 
 export default async function Navbar() {
@@ -16,7 +16,7 @@ export default async function Navbar() {
   const [cart, loggedInMember, collections] = await Promise.all([
     getCart(wixClient),
     getLoggedInMember(wixClient),
-    getCollection(wixClient),
+    getCollections(wixClient),
   ]);
 
   return (

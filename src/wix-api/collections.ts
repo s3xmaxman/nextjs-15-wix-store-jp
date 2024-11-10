@@ -30,7 +30,7 @@ export const getCollectionBySlug = cache(
  * @param {WixClient} wixClient - Wixクライアントインスタンス
  * @returns {Promise<collections.Collection[]>} コレクションの配列
  */
-export const getCollection = cache(
+export const getCollections = cache(
   async (wixClient: WixClient): Promise<collections.Collection[]> => {
     const collections = await wixClient.collections
       .queryCollections()
