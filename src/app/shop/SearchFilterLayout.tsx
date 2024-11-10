@@ -189,7 +189,7 @@ function PriceFilter({
 
   return (
     <div className="space-y-3">
-      <div className="font-bold">価格範囲</div>
+      <div className="font-bold">商品価格</div>
       <form className="flex items-center gap-2" onSubmit={onSubmit}>
         <Input
           type="number"
