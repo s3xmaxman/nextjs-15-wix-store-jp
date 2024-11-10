@@ -3,7 +3,7 @@ import Product from "@/components/Product";
 import { Skeleton } from "@/components/ui/skeleton";
 import { delay } from "@/lib/utils";
 import { getWixServerClient } from "@/lib/wix-client.server";
-import { queryProducts } from "@/wix-api/products";
+import { ProductsSort, queryProducts } from "@/wix-api/products";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -12,6 +12,10 @@ interface PageProps {
   searchParams: {
     q?: string;
     page?: string;
+    collection?: string[];
+    price_min?: string;
+    price_max?: string;
+    sort?: string;
   };
 }
 
@@ -22,9 +26,16 @@ export function generateMetadata({ searchParams: { q } }: PageProps): Metadata {
 }
 
 export default async function Page({
-  searchParams: { q, page = "1" },
+  searchParams: {
+    q,
+    page = "1",
+    collection: collectionIds,
+    price_min,
+    price_max,
+    sort,
+  },
 }: PageProps) {
-  const title = q ? `「${q}」の検索結果` : "商品";
+  const title = q ? `Results for "${q}"` : "Products";
 
   return (
     <div className="space-y-10">
@@ -33,10 +44,10 @@ export default async function Page({
         <ProductResults
           q={q}
           page={parseInt(page)}
-          // collectionIds={collectionIds}
-          // priceMin={price_min ? parseInt(price_min) : undefined}
-          // priceMax={price_max ? parseInt(price_max) : undefined}
-          // sort={sort as ProductsSort}
+          collectionIds={collectionIds}
+          priceMin={price_min ? parseInt(price_min) : undefined}
+          priceMax={price_max ? parseInt(price_max) : undefined}
+          sort={sort as ProductsSort}
         />
       </Suspense>
     </div>
@@ -46,9 +57,20 @@ export default async function Page({
 interface ProductResultsProps {
   q?: string;
   page: number;
+  collectionIds?: string[];
+  priceMin?: number;
+  priceMax?: number;
+  sort?: ProductsSort;
 }
 
-async function ProductResults({ q, page }: ProductResultsProps) {
+async function ProductResults({
+  q,
+  page,
+  collectionIds,
+  priceMin,
+  priceMax,
+  sort,
+}: ProductResultsProps) {
   await delay(1000);
 
   const pageSize = 8;
@@ -57,12 +79,16 @@ async function ProductResults({ q, page }: ProductResultsProps) {
     q,
     limit: pageSize,
     skip: (page - 1) * pageSize,
+    collectionIds,
+    priceMin,
+    priceMax,
+    sort,
   });
 
   if (page > (products.totalPages || 1)) notFound();
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-10 group-has-[[data-pending]]:animate-pulse">
       <p className="text-center text-xl">
         {products.totalCount} 件の商品が見つかりました
       </p>

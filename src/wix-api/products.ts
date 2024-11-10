@@ -1,12 +1,14 @@
 import { WixClient } from "@/lib/wix-client.base";
 import { cache } from "react";
 
-type ProductsSort = "last_updated" | "price_asc" | "price_desc";
+export type ProductsSort = "last_updated" | "price_asc" | "price_desc";
 
 interface QueryProductsFilter {
   q?: string;
   collectionIds?: string[] | string;
   sort?: ProductsSort;
+  priceMin?: number;
+  priceMax?: number;
   skip?: number;
   limit?: number;
 }
@@ -24,7 +26,15 @@ interface QueryProductsFilter {
  */
 export async function queryProducts(
   wixClient: WixClient,
-  { collectionIds, sort = "last_updated", skip, limit, q }: QueryProductsFilter,
+  {
+    collectionIds,
+    sort = "last_updated",
+    skip,
+    limit,
+    q,
+    priceMin,
+    priceMax,
+  }: QueryProductsFilter,
 ) {
   let query = wixClient.products.queryProducts();
 
@@ -55,6 +65,14 @@ export async function queryProducts(
     case "last_updated":
       query = query.descending("lastUpdated");
       break;
+  }
+
+  if (priceMin) {
+    query = query.ge("priceData.price", priceMin);
+  }
+
+  if (priceMax) {
+    query = query.le("priceData.price", priceMax);
   }
 
   // 取得する商品の数を制限
