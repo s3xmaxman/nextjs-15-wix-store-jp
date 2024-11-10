@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ProductsSort } from "@/wix-api/products";
 import { collections } from "@wix/stores";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useOptimistic, useState, useTransition } from "react";
@@ -72,18 +73,36 @@ export default function SearchFilterLayout({
   }
 
   return (
-    <main className="flex flex-col items-center justify-center gap-10 px-5 lg:flex-row lg:items-start">
-      <aside className="h-fit space-y-5 lg:sticky lg:top-10 lg:w-64">
-        <CollectionFilter
+    <main className="group flex flex-col items-center justify-center gap-10 px-5 py-10 lg:flex-row lg:items-start">
+      <aside
+        className="h-fit space-y-5 lg:sticky lg:top-10 lg:w-64"
+        data-pending={isPending ? "" : undefined}
+      >
+        <CollectionsFilter
           collections={collections}
           selectedCollectionIds={optimisticFilters.collection}
           updateCollectionIds={(collectionIds) =>
             updateFilters({ collection: collectionIds })
           }
         />
+        <PriceFilter
+          minDefaultInput={optimisticFilters.price_min}
+          maxDefaultInput={optimisticFilters.price_max}
+          updatePriceRange={(priceMin, priceMax) =>
+            updateFilters({
+              price_min: priceMin,
+              price_max: priceMax,
+            })
+          }
+        />
       </aside>
       <div className="w-full max-w-7xl space-y-5">
-        <div className="flex justify-center lg:justify-end">sort filter</div>
+        <div className="flex justify-center lg:justify-end">
+          <SortFilter
+            sort={optimisticFilters.sort}
+            updateSort={(sort) => updateFilters({ sort })}
+          />
+        </div>
         {children}
       </div>
     </main>
@@ -96,7 +115,7 @@ interface CollectionFilterProps {
   updateCollectionIds: (collectionIds: string[]) => void;
 }
 
-function CollectionFilter({
+function CollectionsFilter({
   collections,
   selectedCollectionIds,
   updateCollectionIds,
@@ -141,5 +160,86 @@ function CollectionFilter({
         </button>
       )}
     </div>
+  );
+}
+
+interface PriceFilterProps {
+  minDefaultInput: string | undefined;
+  maxDefaultInput: string | undefined;
+  updatePriceRange: (min: string | undefined, max: string | undefined) => void;
+}
+
+function PriceFilter({
+  minDefaultInput,
+  maxDefaultInput,
+  updatePriceRange,
+}: PriceFilterProps) {
+  const [minInput, setMinInput] = useState(minDefaultInput);
+  const [maxInput, setMaxInput] = useState(maxDefaultInput);
+
+  useEffect(() => {
+    setMinInput(minDefaultInput || "");
+    setMaxInput(maxDefaultInput || "");
+  }, [minDefaultInput, maxDefaultInput]);
+
+  function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    updatePriceRange(minInput, maxInput);
+  }
+
+  return (
+    <div className="space-y-3">
+      <div className="font-bold">価格範囲</div>
+      <form className="flex items-center gap-2" onSubmit={onSubmit}>
+        <Input
+          type="number"
+          name="min"
+          placeholder="最小"
+          value={minInput}
+          onChange={(e) => setMinInput(e.target.value)}
+          className="w-20"
+        />
+        <span>-</span>
+        <Input
+          type="number"
+          name="max"
+          placeholder="最大"
+          value={maxInput}
+          onChange={(e) => setMaxInput(e.target.value)}
+          className="w-20"
+        />
+        <Button type="submit">適用</Button>
+      </form>
+      {(!!minDefaultInput || !!maxDefaultInput) && (
+        <button
+          onClick={() => updatePriceRange(undefined, undefined)}
+          className="text-sm text-primary hover:underline"
+        >
+          クリア
+        </button>
+      )}
+    </div>
+  );
+}
+
+interface SortFilterProps {
+  sort: string | undefined;
+  updateSort: (value: ProductsSort) => void;
+}
+
+function SortFilter({ sort, updateSort }: SortFilterProps) {
+  return (
+    <Select value={sort || "last_updated"} onValueChange={updateSort}>
+      <SelectTrigger className="w-fit gap-2 text-start">
+        <span>
+          並べ替え: <SelectValue />
+        </span>
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="last_updated">最新</SelectItem>
+        <SelectItem value="price_asc">価格（安い順）</SelectItem>
+        <SelectItem value="price_desc">価格（高い順）</SelectItem>
+      </SelectContent>
+    </Select>
   );
 }
