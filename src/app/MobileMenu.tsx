@@ -40,6 +40,10 @@ export default function MobileMenu({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname, searchParams]);
+
   return (
     <>
       <Button
@@ -53,7 +57,7 @@ export default function MobileMenu({
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetContent side="left" className="w-full">
           <SheetHeader>
-            <SheetTitle>Navigation</SheetTitle>
+            <SheetTitle>ナビゲーション</SheetTitle>
           </SheetHeader>
           <div className="flex flex-col items-center space-y-10 py-10">
             <SearchField className="w-full" />
