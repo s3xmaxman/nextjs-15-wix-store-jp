@@ -1,3 +1,4 @@
+import { WIX_STORES_APP_ID } from "@/lib/constants";
 import { WixClient } from "@/lib/wix-client.base";
 import { cache } from "react";
 
@@ -113,3 +114,59 @@ export const getProductBySlug = cache(
     return product;
   },
 );
+
+/**
+ * 指定された商品IDに関連する商品を取得します。
+ *
+ * この関数は、WixのレコメンデーションAPIを使用して、指定された商品に関連する商品を取得します。
+ * 以下のステップで処理を行います：
+ * 1. 指定された商品IDに基づいて、同じカテゴリからの商品やよく一緒に購入される商品を推薦します。
+ * 2. 推薦された商品のIDを取得し、重複を除去します。
+ * 3. 取得した商品IDを使用して、商品情報を取得します。
+ *
+ * @param {WixClient} wixClient - Wixクライアントインスタンス
+ * @param {string} productId - 関連商品を取得する対象の商品ID
+ * @returns {Promise<products.Product[]>} 関連商品の配列。関連商品が見つからない場合は空の配列を返します。
+ */
+export async function getRelatedProducts(
+  wixClient: WixClient,
+  productId: string,
+) {
+  const result = await wixClient.recommendations.getRecommendation(
+    [
+      {
+        _id: "68ebce04-b96a-4c52-9329-08fc9d8c1253", // "From the same categories"
+        appId: WIX_STORES_APP_ID,
+      },
+      {
+        _id: "d5aac1e1-2e53-4d11-85f7-7172710b4783", // Frequenly bought together
+        appId: WIX_STORES_APP_ID,
+      },
+    ],
+    {
+      items: [
+        {
+          appId: WIX_STORES_APP_ID,
+          catalogItemId: productId,
+        },
+      ],
+      minimumRecommendedItems: 3,
+    },
+  );
+
+  // 推薦された商品のIDを取得し、重複を除去
+  const productIds = result.recommendation?.items
+    .map((item) => item.catalogItemId)
+    .filter((id) => id !== productId);
+
+  if (!productIds || productIds.length === 0) return [];
+
+  // 商品情報を取得
+  const productsResult = await wixClient.products
+    .queryProducts()
+    .in("_id", productIds)
+    .limit(4)
+    .find();
+
+  return productsResult.items;
+}
