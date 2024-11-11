@@ -7,6 +7,9 @@ import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { delay } from "@/lib/utils";
 import Product from "@/components/Product";
+import { products } from "@wix/stores";
+import { getLoggedInMember } from "@/wix-api/members";
+import { ProductReviewsLoadingSkeleton } from "./ProductReviews";
 
 interface PageProps {
   params: {
@@ -59,6 +62,13 @@ export default async function Page({ params: { slug } }: PageProps) {
       <Suspense fallback={<RelatedProductsLoadingSkeleton />}>
         <RelatedProducts productId={product._id} />
       </Suspense>
+      <hr />
+      <div className="space-y-5">
+        <h2 className="text-2xl font-bold">購入者レビュー</h2>
+        <Suspense fallback={<ProductReviewsLoadingSkeleton />}>
+          <ProductReviewsSection product={product} />
+        </Suspense>
+      </div>
     </main>
   );
 }
@@ -99,4 +109,27 @@ function RelatedProductsLoadingSkeleton() {
       ))}
     </div>
   );
+}
+
+interface ProductReviewSectionProps {
+  product: products.Product;
+}
+
+async function ProductReviewsSection({ product }: ProductReviewSectionProps) {
+  if (!product._id) {
+    return null;
+  }
+
+  const wixClient = getWixServerClient();
+
+  const loggedInMember = await getLoggedInMember(wixClient);
+
+  // const existingReview = loggedInMember?.contactId
+  // ? (
+  //     await getProductReviews(wixClient, {
+  //       productId: product._id,
+  //       contactId: loggedInMember.contactId,
+  //     })
+  //   ).items[0]
+  // : null;
 }
