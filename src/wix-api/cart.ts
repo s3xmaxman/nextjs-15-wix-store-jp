@@ -91,3 +91,22 @@ export async function updateCartItemQuantity(
 export async function removeCartItem(wixClient: WixClient, productId: string) {
   return wixClient.currentCart.removeLineItemsFromCurrentCart([productId]);
 }
+
+/**
+ * カートをクリアします。
+ * @param {WixClient} wixClient - Wixクライアントインスタンス
+ * @returns {Promise<void>} カートのクリアが成功した場合、何も返さない。失敗した場合はエラーをスローします。
+ */
+export async function clearCart(wixClient: WixClient): Promise<void> {
+  try {
+    return await wixClient.currentCart.deleteCurrentCart();
+  } catch (error) {
+    if (
+      (error as any).details.applicationError.code === "OWNED_CART_NOT_FOUND"
+    ) {
+      return;
+    } else {
+      throw error;
+    }
+  }
+}
