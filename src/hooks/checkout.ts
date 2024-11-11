@@ -1,5 +1,9 @@
 import { wixBrowserClient } from "@/lib/wix-client.browser";
-import { getCheckoutUrlForCurrentCart } from "@/wix-api/checkout";
+import {
+  getCheckoutUrlForCurrentCart,
+  getCheckoutUrlForProduct,
+  GetCheckoutUrlForProductValues,
+} from "@/wix-api/checkout";
 import { useState } from "react";
 import { useToast } from "./use-toast";
 import { set } from "zod";
@@ -29,7 +33,7 @@ export function useCartCheckout() {
 
     try {
       const checkoutUrl = await getCheckoutUrlForCurrentCart(wixBrowserClient);
-      // ここで、取得したURLを使用してリダイレクト処理を行うことができます。
+      window.location.href = checkoutUrl;
     } catch (error) {
       setPending(false);
       console.error(error);
@@ -44,4 +48,49 @@ export function useCartCheckout() {
     startCheckoutFlow,
     pending,
   };
+}
+
+/**
+ * クイック購入機能を提供するカスタムフックです。
+ *
+ * このフックは、特定の商品を直接チェックアウトする機能を提供します。
+ * 商品情報、数量、選択されたオプションを引数として受け取り、
+ * チェックアウトURLを取得し、ユーザーをチェックアウトページにリダイレクトします。
+ * また、チェックアウトプロセスが進行中かどうかを示す状態も管理します。
+ *
+ * @returns {Object} 以下のプロパティを含むオブジェクト:
+ *   - `startCheckoutFlow`: 商品情報を受け取り、チェックアウトフローを開始する非同期関数
+ *   - `pending`: チェックアウトプロセスが進行中かどうかを示すブール値
+ */
+export function useQuickBuy() {
+  const { toast } = useToast();
+  const [pending, setPending] = useState(false);
+
+  /**
+   * 指定された商品のチェックアウトフローを開始します。
+   *
+   * @param {GetCheckoutUrlForProductValues} values - 商品情報、数量、選択されたオプションを含むオブジェクト
+   * @throws {Error} チェックアウトまたはリダイレクトセッションの作成に失敗した場合
+   */
+  async function startCheckoutFlow(values: GetCheckoutUrlForProductValues) {
+    setPending(true);
+
+    try {
+      const checkoutUrl = await getCheckoutUrlForProduct(
+        wixBrowserClient,
+        values,
+      );
+      window.location.href = checkoutUrl;
+    } catch (error) {
+      setPending(false);
+      console.error(error);
+      toast({
+        variant: "destructive",
+        description:
+          "チェックアウトの読み込みに失敗しました。もう一度お試しください。",
+      });
+    }
+  }
+
+  return { startCheckoutFlow, pending };
 }
