@@ -17,3 +17,30 @@ export async function getOrder(wixClient: WixClient, orderId: string) {
     }
   }
 }
+
+export interface GetOrdersFilters {
+  limit?: number;
+  cursor?: string | null;
+}
+
+/**
+ * ユーザーの注文を取得します。
+ * @param {WixClient} wixClient - Wixクライアントインスタンス
+ * @param {GetOrdersFilters} filters - フィルターオブジェクト
+ * @param {number} [filters.limit] - 取得する注文の最大数
+ * @param {string|null} [filters.cursor] - ページングのためのカーソル
+ * @returns {Promise<orders.Order[]>} 注文の配列
+ */
+export async function getUserOrders(
+  wixClient: WixClient,
+  { limit, cursor }: GetOrdersFilters,
+) {
+  return await wixClient.orders.searchOrders({
+    search: {
+      cursorPaging: {
+        limit,
+        cursor,
+      },
+    },
+  });
+}
