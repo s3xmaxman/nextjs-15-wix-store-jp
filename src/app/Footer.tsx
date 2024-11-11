@@ -9,8 +9,7 @@ export default function Footer() {
           <div className="col-span-2 md:col-span-3 lg:col-span-2 lg:pr-8">
             <div className="text-2xl font-bold">Bad Shop</div>
             <p className="mt-7 text-base leading-relaxed text-muted-foreground">
-              Amet minim mollit non deserunt ullamco est sit aliqua dolor do
-              amet sint. Velit officia consequat duis enim velit mollit.
+              今日は大変だった？リラックスするために、何か素敵なものを買ってみませんか。
             </p>
 
             <ul className="mt-9 flex items-center space-x-3">
@@ -92,7 +91,7 @@ export default function Footer() {
 
           <div>
             <p className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
-              Company
+              会社
             </p>
 
             <ul className="mt-6 space-y-4">
@@ -103,7 +102,7 @@ export default function Footer() {
                   className="flex text-base transition-all duration-200 hover:text-primary focus:text-primary"
                 >
                   {" "}
-                  About{" "}
+                  会社概要{" "}
                 </a>
               </li>
 
@@ -114,7 +113,7 @@ export default function Footer() {
                   className="flex text-base transition-all duration-200 hover:text-primary focus:text-primary"
                 >
                   {" "}
-                  Features{" "}
+                  特徴{" "}
                 </a>
               </li>
 
@@ -125,7 +124,7 @@ export default function Footer() {
                   className="flex text-base transition-all duration-200 hover:text-primary focus:text-primary"
                 >
                   {" "}
-                  Works{" "}
+                  作品{" "}
                 </a>
               </li>
 
@@ -136,7 +135,7 @@ export default function Footer() {
                   className="flex text-base transition-all duration-200 hover:text-primary focus:text-primary"
                 >
                   {" "}
-                  Career{" "}
+                  キャリア{" "}
                 </a>
               </li>
             </ul>
@@ -144,7 +143,7 @@ export default function Footer() {
 
           <div>
             <p className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
-              Help
+              ヘルプ
             </p>
 
             <ul className="mt-6 space-y-4">
@@ -155,7 +154,7 @@ export default function Footer() {
                   className="flex text-base transition-all duration-200 hover:text-primary focus:text-primary"
                 >
                   {" "}
-                  Customer Support{" "}
+                  カスタマーサポート{" "}
                 </a>
               </li>
 
@@ -166,7 +165,7 @@ export default function Footer() {
                   className="flex text-base transition-all duration-200 hover:text-primary focus:text-primary"
                 >
                   {" "}
-                  Delivery Details{" "}
+                  配送詳細{" "}
                 </a>
               </li>
 
@@ -177,7 +176,7 @@ export default function Footer() {
                   className="flex text-base transition-all duration-200 hover:text-primary focus:text-primary"
                 >
                   {" "}
-                  Terms & Conditions{" "}
+                  利用規約{" "}
                 </a>
               </li>
 
@@ -188,7 +187,7 @@ export default function Footer() {
                   className="flex text-base transition-all duration-200 hover:text-primary focus:text-primary"
                 >
                   {" "}
-                  Privacy Policy{" "}
+                  プライバシーポリシー{" "}
                 </a>
               </li>
             </ul>
@@ -196,19 +195,19 @@ export default function Footer() {
 
           <div className="col-span-2 md:col-span-1 lg:col-span-2 lg:pl-8">
             <p className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
-              Subscribe to newsletter
+              ニュースレターに登録
             </p>
 
             <form action="#" method="POST" className="mt-6">
               <div>
                 <label htmlFor="email" className="sr-only">
-                  Email
+                  メールアドレス
                 </label>
                 <Input
                   type="email"
                   name="email"
                   id="email"
-                  placeholder="Enter your email"
+                  placeholder="メールアドレスを入力してください"
                   className="block w-full"
                 />
               </div>
@@ -218,7 +217,7 @@ export default function Footer() {
                 size="lg"
                 className="mt-3 inline-flex items-center justify-center rounded-md bg-primary px-6 py-4"
               >
-                Subscribe
+                登録
               </Button>
             </form>
           </div>
@@ -227,7 +226,7 @@ export default function Footer() {
         <hr className="mb-10 mt-16" />
 
         <p className="text-center text-sm text-muted-foreground">
-          © Copyright {new Date().getFullYear()}, All Rights Reserved by Flow
+          © Copyright {new Date().getFullYear()}, All Rights Reserved by Bad
           Shop
         </p>
       </div>
