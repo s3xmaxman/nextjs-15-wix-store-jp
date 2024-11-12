@@ -115,6 +115,11 @@ export const getProductBySlug = cache(
   },
 );
 
+export async function getProductById(wixClient: WixClient, productId: string) {
+  const result = await wixClient.products.getProduct(productId);
+  return result.product;
+}
+
 /**
  * 指定された商品IDに関連する商品を取得します。
  *

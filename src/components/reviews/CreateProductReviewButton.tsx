@@ -13,6 +13,7 @@ import {
   DialogTitle,
 } from "../ui/dialog";
 import CreateProductReviewDialog from "./CreateProductReviewDialog";
+import { useSearchParams } from "next/navigation";
 
 interface CreateProductReviewButtonProps {
   product: products.Product;
@@ -25,7 +26,10 @@ export default function CreateProductReviewButton({
   loggedInMember,
   hasExistingReview,
 }: CreateProductReviewButtonProps) {
-  const [showReviewDialog, setShowReviewDialog] = useState(false);
+  const searchParams = useSearchParams();
+  const [showReviewDialog, setShowReviewDialog] = useState(
+    searchParams.has("createReview"),
+  );
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
 
   return (
@@ -40,7 +44,7 @@ export default function CreateProductReviewButton({
       </Button>
       <CreateProductReviewDialog
         product={product}
-        open={showReviewDialog && !hasExistingReview}
+        open={showReviewDialog && !hasExistingReview && !!loggedInMember}
         onOpenChange={setShowReviewDialog}
         onSubmit={() => {
           setShowReviewDialog(false);
