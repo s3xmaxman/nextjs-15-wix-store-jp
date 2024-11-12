@@ -1,7 +1,6 @@
 import PaginationBar from "@/components/PaginationBar";
 import Product from "@/components/Product";
 import { Skeleton } from "@/components/ui/skeleton";
-import { delay } from "@/lib/utils";
 import { getWixServerClient } from "@/lib/wix-client.server";
 import { ProductsSort, queryProducts } from "@/wix-api/products";
 import { Metadata } from "next";
@@ -71,8 +70,6 @@ async function ProductResults({
   priceMax,
   sort,
 }: ProductResultsProps) {
-  await delay(1000);
-
   const pageSize = 8;
 
   const products = await queryProducts(getWixServerClient(), {

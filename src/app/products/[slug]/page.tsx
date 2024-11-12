@@ -5,7 +5,6 @@ import { Metadata } from "next";
 import { getWixServerClient } from "@/lib/wix-client.server";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { delay } from "@/lib/utils";
 import Product from "@/components/Product";
 import { products } from "@wix/stores";
 import { getLoggedInMember } from "@/wix-api/members";
@@ -82,8 +81,6 @@ interface RelatedProductsProps {
 }
 
 async function RelatedProducts({ productId }: RelatedProductsProps) {
-  await delay(2000);
-
   const relatedProducts = await getRelatedProducts(
     getWixServerClient(),
     productId,
@@ -134,8 +131,6 @@ async function ProductReviewsSection({ product }: ProductReviewsSectionProps) {
         })
       ).items[0]
     : null;
-
-  await delay(5000);
 
   return (
     <div className="space-y-5">

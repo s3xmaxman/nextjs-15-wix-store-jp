@@ -1,13 +1,11 @@
 import PaginationBar from "@/components/PaginationBar";
 import Product from "@/components/Product";
 import { Skeleton } from "@/components/ui/skeleton";
-import { delay } from "@/lib/utils";
 import { getWixServerClient } from "@/lib/wix-client.server";
 import { getCollectionBySlug } from "@/wix-api/collections";
 import { queryProducts } from "@/wix-api/products";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { parse } from "path";
 import { Suspense } from "react";
 
 interface PageProps {
@@ -65,8 +63,6 @@ interface ProductsProps {
 }
 
 async function Products({ collectionId, page }: ProductsProps) {
-  await delay(2000);
-
   const pageSize = 8;
 
   const collectionProducts = await queryProducts(getWixServerClient(), {
