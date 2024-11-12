@@ -68,10 +68,12 @@ export default function ProductReviews({ product }: ProductReviewsProps) {
     <div className="space-y-5">
       {status === "pending" && <ProductReviewsLoadingSkeleton />}
       {status === "error" && (
-        <p className="text-destructive">Error fetching reviews</p>
+        <p className="text-destructive">
+          レビューの取得中にエラーが発生しました
+        </p>
       )}
       {status === "success" && !reviewItems.length && !hasNextPage && (
-        <p>No reviews yet</p>
+        <p>まだレビューがありません</p>
       )}
       <div className="divide-y">
         {reviewItems.map((review) => (
@@ -158,5 +160,38 @@ export function ProductReviewsLoadingSkeleton() {
         </div>
       ))}
     </div>
+  );
+}
+
+interface MediaAttachmentProps {
+  media: reviews.Media;
+}
+
+function MediaAttachment({ media }: MediaAttachmentProps) {
+  if (media.image) {
+    return (
+      <Zoom>
+        <WixImage
+          mediaIdentifier={media.image}
+          alt="Review media"
+          scaleToFill={false}
+          className="max-h-40 max-w-40 object-contain"
+        />
+      </Zoom>
+    );
+  }
+
+  if (media.video) {
+    return (
+      <video controls className="max-h-40 max-w-40">
+        <source src={wixMedia.getVideoUrl(media.video).url} type="video/mp4" />
+      </video>
+    );
+  }
+
+  return (
+    <span className="text-destructive">
+      サポートされていないメディア形式です
+    </span>
   );
 }

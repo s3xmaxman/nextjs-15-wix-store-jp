@@ -17,11 +17,13 @@ import CreateProductReviewDialog from "./CreateProductReviewDialog";
 interface CreateProductReviewButtonProps {
   product: products.Product;
   loggedInMember: members.Member | null;
+  hasExistingReview: boolean;
 }
 
 export default function CreateProductReviewButton({
   product,
   loggedInMember,
+  hasExistingReview,
 }: CreateProductReviewButtonProps) {
   const [showReviewDialog, setShowReviewDialog] = useState(false);
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
@@ -32,11 +34,13 @@ export default function CreateProductReviewButton({
         onClick={() => setShowReviewDialog(true)}
         disabled={!loggedInMember}
       >
-        {loggedInMember ? "Write a review" : "Log in to write a review"}
+        {loggedInMember
+          ? "レビューを書く"
+          : "レビューを書くためにログインしてください"}
       </Button>
       <CreateProductReviewDialog
         product={product}
-        open={showReviewDialog}
+        open={showReviewDialog && !hasExistingReview}
         onOpenChange={setShowReviewDialog}
         onSubmit={() => {
           setShowReviewDialog(false);
@@ -60,6 +64,32 @@ function ReviewSubmittedDialog({
   open,
   onOpenChange,
 }: ReviewSubmittedDialogProps) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>レビューをありがとうございます！</DialogTitle>
+          <DialogDescription>
+            あなたのレビューは正常に送信されました。チームによる承認後、表示されます。
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button onClick={() => onOpenChange(false)}>閉じる</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+interface ReviewAlreadyExistsDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+function ReviewAlreadyExistsDialog({
+  open,
+  onOpenChange,
+}: ReviewAlreadyExistsDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>

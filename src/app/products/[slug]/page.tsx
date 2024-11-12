@@ -9,7 +9,11 @@ import { delay } from "@/lib/utils";
 import Product from "@/components/Product";
 import { products } from "@wix/stores";
 import { getLoggedInMember } from "@/wix-api/members";
-import { ProductReviewsLoadingSkeleton } from "./ProductReviews";
+import ProductReviews, {
+  ProductReviewsLoadingSkeleton,
+} from "./ProductReviews";
+import CreateProductReviewButton from "@/components/reviews/CreateProductReviewButton";
+import { getProductReviews } from "@/wix-api/reviews";
 
 interface PageProps {
   params: {
@@ -111,25 +115,36 @@ function RelatedProductsLoadingSkeleton() {
   );
 }
 
-interface ProductReviewSectionProps {
+interface ProductReviewsSectionProps {
   product: products.Product;
 }
 
-async function ProductReviewsSection({ product }: ProductReviewSectionProps) {
-  if (!product._id) {
-    return null;
-  }
+async function ProductReviewsSection({ product }: ProductReviewsSectionProps) {
+  if (!product._id) return null;
 
   const wixClient = getWixServerClient();
 
   const loggedInMember = await getLoggedInMember(wixClient);
 
-  // const existingReview = loggedInMember?.contactId
-  // ? (
-  //     await getProductReviews(wixClient, {
-  //       productId: product._id,
-  //       contactId: loggedInMember.contactId,
-  //     })
-  //   ).items[0]
-  // : null;
+  const existingReview = loggedInMember?.contactId
+    ? (
+        await getProductReviews(wixClient, {
+          productId: product._id,
+          contactId: loggedInMember.contactId,
+        })
+      ).items[0]
+    : null;
+
+  await delay(5000);
+
+  return (
+    <div className="space-y-5">
+      <CreateProductReviewButton
+        product={product}
+        loggedInMember={loggedInMember}
+        hasExistingReview={!!existingReview}
+      />
+      <ProductReviews product={product} />
+    </div>
+  );
 }
