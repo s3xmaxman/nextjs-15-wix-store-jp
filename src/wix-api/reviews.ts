@@ -33,7 +33,7 @@ export async function createProductReview(
   const member = await getLoggedInMember(wixClient);
 
   if (!member) {
-    throw new Error("ログインしていません。");
+    throw Error("Must be logged in to create a review");
   }
 
   const authorName =

@@ -51,6 +51,10 @@ export default function CreateProductReviewButton({
         open={showConfirmationDialog}
         onOpenChange={setShowConfirmationDialog}
       />
+      <ReviewAlreadyExistsDialog
+        open={showReviewDialog && hasExistingReview}
+        onOpenChange={setShowReviewDialog}
+      />
     </>
   );
 }
